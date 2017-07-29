@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ! Excerpted from "The Cucumber for Java Book",
+ ! published by The Pragmatic Bookshelf.
+ ! Copyrights apply to this code. It may not be used to create training material, 
+ ! courses, books, articles, and the like. Contact us if you are in doubt.
+ ! We make no guarantees that this code is fit for any purpose. 
+ ! Visit http://www.pragmaticprogrammer.com/titles/srjcuc for more book information.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<import resource="classpath:org/springframework/jdbc/support/sql-error-codes.xml"/>
+	
+    <context:annotation-config/>
+    
+
+    <context:component-scan base-package="hooks, nicebank, support" />
+
+    <bean class="support.AtmUserInterface" scope="cucumber-glue" />
+    <bean class="nicebank.CashSlot" scope="cucumber-glue" />
+
+    <bean class="support.AccountFactory" factory-method="createTestAccount"
+                                            lazy-init="true" scope="cucumber-glue" />
+
+    <bean class="org.openqa.selenium.support.events.EventFiringWebDriver"
+                                        scope="cucumber-glue" destroy-method="close">
+        <constructor-arg>
+            <bean class="org.openqa.selenium.firefox.FirefoxDriver"
+                                        scope="cucumber-glue"/>
+        </constructor-arg>
+    </bean>
+    
+    <bean id = "H2" class="org.springframework.jdbc.support.SQLErrorCodes">
+        <property name="badSqlGrammarCodes">
+            <value>
+                42000,42001,42101,42102,42111,42112,42121,42122,42132
+            </value>
+        </property>
+        <property name="duplicateKeyCodes">
+            <value>23001,23505</value>
+        </property>
+        <property name="dataIntegrityViolationCodes">
+            <value>22003,22012,22025,23000</value>
+        </property>
+        <property name="dataAccessResourceFailureCodes">
+            <value>90046,90100,90117,90121,90126</value>
+        </property>
+        <property name="cannotAcquireLockCodes">
+            <value>50200</value>
+        </property>
+    </bean>
+     
+</beans>
